@@ -1,0 +1,124 @@
+<head>
+  <style>
+    body{
+      height:100%;
+    }
+    #result{
+      height:58%;
+      width:80%;
+    }
+    #text{
+      border: 0.5px solid rgba(0,0,0,0.3); 
+      box-sizing: content-box;
+      width:90%;
+    }
+    #text span{
+      opacity:0.5;
+    }
+    #text input{
+      width:75%;
+      border:0px;
+      opacity: 0.8;
+    }
+    #text input:focus{
+      outline:0;
+    }
+    .s2{
+      float: right;
+    }
+    .s2 span{
+      font-size: 80%;
+      opacity:1 !important;
+    }
+    .box{
+      display: inline-block;
+    }
+    .target{
+      border: 0.5px solid rgba(0,0,0,0.3);
+      height: 80%;
+      width: 40%;
+      margin: 0 5% 0 0;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="targetText" class="target box" placeholder="target TEXT"></textarea>
+  <div class="main box">
+    <label><p>Insert RegExp and push btn.</p></label>
+    <div id="text">
+      <span class="s1">&nbsp;/</span>
+      <input type="text" id="regexp" placeholder="Regular Expression">
+      <span class="s2">&nbsp;/<span></span></span>
+      <div style="clear: right;"></div>
+    </div>
+    <div id="chkFlgs">
+      <label for="i">i:<input type="checkbox" id="i"></label>
+      <label for="g">g:<input type="checkbox" id="g" checked></label>
+      <label for="m">m:<input type="checkbox" id="m" checked></label>
+    </div>
+    <p>
+      <button id="btn" disabled>go</button>
+    </p>
+    <p>matches:<span id="msg"></span>
+    </p>
+    <textarea id="result"></textarea>
+  </div>
+  <!--<script src="test.js"></script>-->
+  <script>
+    let targetText = document.getElementById('targetText');
+    let btn = document.getElementById('btn');
+    let regexp = document.getElementById('regexp');
+    let result = document.getElementById('result');
+    let i = document.getElementById('i');
+    let g = document.getElementById('g');
+    let m = document.getElementById('m');
+    let msg = document.getElementById('msg');
+    let text = document.getElementById('text');
+    let chkFlgs = document.getElementById('chkFlgs');
+    
+    let selectFlgs = function(){
+      
+      let ary = [
+        i.checked ? 'i' : '',
+        g.checked ? 'g' : '',
+        m.checked ? 'm' : ''
+      ];
+      
+      let flgs = ary.reduce((a,b)=>a+=b,'');
+      
+      text.childNodes[5].childNodes[1].innerText = flgs;
+      
+      return flgs;
+    };
+    
+    window.onload = selectFlgs();
+    
+    chkFlgs.addEventListener('change',selectFlgs);
+    
+    regexp.addEventListener('change',function(){
+      
+      btn.disabled = true;
+      
+      
+      if(!regexp.value == '')btn.disabled = null;
+      
+    });
+    
+    btn.addEventListener('click',function(){
+
+      let regExp = new RegExp(regexp.value,selectFlgs());
+      //let str = gtxt.match(regExp);
+      console.log(typeof targetText);
+      console.log(targetText.value);
+      let str = targetText.value.match(regExp);
+      if(str === null){
+        msg.innerText = 'none';
+      }else{
+        console.log(str);
+        let matches = str.reduce((a,b)=>a+='\n'+b,'');
+        result.value = matches.slice(1);
+        msg.innerText = str.length;
+      }
+    });
+  </script>
+</body>
